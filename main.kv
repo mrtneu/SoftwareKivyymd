@@ -10,7 +10,7 @@ ScreenManager:
         elevation: 2
         title: "Añadir estampilla"
         md_bg_color: 0.56, 0.79, 0.18, 1
-        specific_text_color: 0, 0, 0, 1
+        specific_text_color: 'black'
         font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
     ScrollView:
         pos_hint: {'center_x': 0.5,'center_y':0.4}
@@ -27,6 +27,9 @@ ScreenManager:
                 hint_text: "Nombre"
                 text_color: 0, 0, 0, 1
                 line_color_normal: 0.56, 0.79, 0.18, 1
+                line_color_focus: 0.56, 0.79, 0.18, 1
+                hint_text_color_focus: 0.56, 0.79, 0.18, 1
+                text_color_focus: 'black'
 
             MDTextField:
                 id: año
@@ -34,12 +37,18 @@ ScreenManager:
                 input_filter: 'int'
                 text_color: 0, 0, 0, 1
                 line_color_normal: 0.56, 0.79, 0.18, 1
+                line_color_focus: 0.56, 0.79, 0.18, 1
+                hint_text_color_focus: 0.56, 0.79, 0.18, 1
+                text_color_focus: 'black'
 
             MDTextField:
                 id: pais
                 hint_text: "País"
                 text_color: 0, 0, 0, 1
                 line_color_normal: 0.56, 0.79, 0.18, 1
+                line_color_focus: 0.56, 0.79, 0.18, 1
+                hint_text_color_focus: 0.56, 0.79, 0.18, 1
+                text_color_focus: 'black'
 
             MDTextField:
                 id: description
@@ -47,6 +56,9 @@ ScreenManager:
                 multiline: True
                 text_color: 0, 0, 0, 1
                 line_color_normal: 0.56, 0.79, 0.18, 1
+                line_color_focus: 0.56, 0.79, 0.18, 1
+                hint_text_color_focus: 0.56, 0.79, 0.18, 1
+                text_color_focus: 'black'
 
             BoxLayout:
                 orientation: 'horizontal'
@@ -59,6 +71,9 @@ ScreenManager:
                     size_hint_x: 0.7
                     text_color: 0, 0, 0, 1
                     line_color_normal: 0.56, 0.79, 0.18, 1
+                    line_color_focus: 0.56, 0.79, 0.18, 1
+                    hint_text_color_focus: 0.56, 0.79, 0.18, 1
+                    text_color_focus: 'black'
 
                 MDRaisedButton:
                     font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
@@ -77,12 +92,17 @@ ScreenManager:
                 height: dp(200)
 
 
-    MDRectangleFlatButton:
+    MDFillRoundFlatIconButton:
         text: 'Modificar'
+        icon: "pencil"
+        icon_color: 'black'
         pos_hint: {'center_x': 0.9,'center_y':0.05}
         on_press:
             root.manager.current ='2'
             root.manager.transition.direction = 'left'
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        text_color: 'black'
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
 
 
 <Segunda>:
@@ -92,23 +112,33 @@ ScreenManager:
         elevation: 2
         title: "Modificar estampilla"
         md_bg_color: 0.56, 0.79, 0.18, 1
-        specific_text_color: 0, 0, 0, 1
+        specific_text_color: 'black'
         font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
     MDLabel:
-        text: 'Hola Pantalla 2'
+        text: 'Pantalla 2'
         halign: 'center'
-    MDRectangleFlatButton:
+    MDFillRoundFlatIconButton:
         text: 'Añadir'
+        icon: "plus"
+        icon_color: 'black'
         pos_hint: {'center_x':0.1,'center_y':0.05}
         on_press:
             root.manager.current = '1'
             root.manager.transition.direction = 'right'
-    MDRectangleFlatButton:
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        text_color: 0, 0, 0, 1
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+    MDFillRoundFlatIconButton:
         text: 'Lista'
+        icon: "list-box-outline"
+        icon_color: 'black'
         pos_hint: {'center_x': 0.9,'center_y':0.05}
         on_press:
             root.manager.current = '3'
             root.manager.transition.direction = 'left'
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        text_color: 0, 0, 0, 1
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
 
 <Tercera>:
     name:'3'
@@ -117,14 +147,19 @@ ScreenManager:
         elevation: 2
         title: "Lista de estampillas"
         md_bg_color: 0.56, 0.79, 0.18, 1
-        specific_text_color: 0, 0, 0, 1
+        specific_text_color: 'black'
         font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
     MDLabel:
-        text:'Hola Pantalla 3 y Final'
+        text:'Pantalla 3'
         halign: 'center'
-    MDRectangleFlatButton:
+    MDFillRoundFlatIconButton:
         text: 'Modificar'
+        icon: "pencil"
+        icon_color: 'black'
         pos_hint: {'center_x':0.1,'center_y':0.05}
         on_press:
             root.manager.current = '2'
             root.manager.transition.direction = 'right'
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        text_color: 0, 0, 0, 1
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
