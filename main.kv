@@ -1,0 +1,81 @@
+BoxLayout:
+    orientation: 'vertical'
+
+
+    MDTopAppBar:
+        elevation: 2
+        title: "sofichi"
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        specific_text_color: 0, 0, 0, 1
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+ 
+
+    ScrollView:
+    
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            padding: dp(5)
+            spacing: dp(5)
+            
+
+            MDTextField:
+                id: nombre
+                hint_text: "Nombre"
+                text_color: 0, 0, 0, 1
+                line_color_normal: 0.56, 0.79, 0.18, 1
+
+            MDTextField:
+                id: año
+                hint_text: "Año"
+                input_filter: 'int'
+                text_color: 0, 0, 0, 1
+                line_color_normal: 0.56, 0.79, 0.18, 1
+
+            MDTextField:
+                id: pais
+                hint_text: "País"
+                text_color: 0, 0, 0, 1
+                line_color_normal: 0.56, 0.79, 0.18, 1
+            MDTextField:
+                id: pais
+                hint_text: "testeo"
+                text_color: 0, 0, 0, 1
+                line_color_normal: 0.56, 0.79, 0.18, 1
+
+            MDTextField:
+                id: description
+                hint_text: "Descripción"
+                multiline: True
+                text_color: 0, 0, 0, 1
+                line_color_normal: 0.56, 0.79, 0.18, 1
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(200)
+
+                MDTextField:
+                    id: imagen_texto
+                    hint_text: "Ruta de la Imagen"
+                    size_hint_x: 0.7
+                    text_color: 0, 0, 0, 1
+                    line_color_normal: 0.56, 0.79, 0.18, 1
+
+                MDRaisedButton:
+                    font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+                    text: "cargar imagen"
+                    size_hint_x: 0.3
+                    on_release: app.load_image()
+                    text_color: 0, 0, 0, 1
+                    md_bg_color: 0.56, 0.79, 0.18, 1
+                    title_color: 0, 0, 0, 1
+
+
+            Image:
+                id: imagen
+                size_hint_y: None
+                height: dp(200)
+                
+            
