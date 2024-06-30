@@ -1,17 +1,19 @@
-BoxLayout:
-    orientation: 'vertical'
+ScreenManager:
+    Primera:
+    Segunda:
+    Tercera:
 
-
+<Primera>:
+    name:'1'
     MDTopAppBar:
+        pos_hint: {'center_x': 0.5,'center_y':0.96}
         elevation: 2
-        title: "sofichi"
+        title: "Añadir estampilla"
         md_bg_color: 0.56, 0.79, 0.18, 1
         specific_text_color: 0, 0, 0, 1
         font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
- 
-
     ScrollView:
-    
+        pos_hint: {'center_x': 0.5,'center_y':0.4}
         BoxLayout:
             orientation: 'vertical'
             size_hint_y: None
@@ -38,11 +40,6 @@ BoxLayout:
                 hint_text: "País"
                 text_color: 0, 0, 0, 1
                 line_color_normal: 0.56, 0.79, 0.18, 1
-            MDTextField:
-                id: pais
-                hint_text: "testeo"
-                text_color: 0, 0, 0, 1
-                line_color_normal: 0.56, 0.79, 0.18, 1
 
             MDTextField:
                 id: description
@@ -66,16 +63,68 @@ BoxLayout:
                 MDRaisedButton:
                     font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
                     text: "cargar imagen"
-                    size_hint_x: 0.3
-                    on_release: app.load_image()
+                    size_hint_x: 0.2
+                    on_release: app.cargar_imagen()
                     text_color: 0, 0, 0, 1
                     md_bg_color: 0.56, 0.79, 0.18, 1
                     title_color: 0, 0, 0, 1
+                    pos_hint: {'center_x': 0.5,'center_y':0.2}
 
 
             Image:
                 id: imagen
                 size_hint_y: None
                 height: dp(200)
-                
-            
+
+
+    MDRectangleFlatButton:
+        text: 'Modificar'
+        pos_hint: {'center_x': 0.9,'center_y':0.05}
+        on_press:
+            root.manager.current ='2'
+            root.manager.transition.direction = 'left'
+
+
+<Segunda>:
+    name:'2'
+    MDTopAppBar:
+        pos_hint: {'center_x': 0.5,'center_y':0.96}
+        elevation: 2
+        title: "Modificar estampilla"
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        specific_text_color: 0, 0, 0, 1
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+    MDLabel:
+        text: 'Hola Pantalla 2'
+        halign: 'center'
+    MDRectangleFlatButton:
+        text: 'Añadir'
+        pos_hint: {'center_x':0.1,'center_y':0.05}
+        on_press:
+            root.manager.current = '1'
+            root.manager.transition.direction = 'right'
+    MDRectangleFlatButton:
+        text: 'Lista'
+        pos_hint: {'center_x': 0.9,'center_y':0.05}
+        on_press:
+            root.manager.current = '3'
+            root.manager.transition.direction = 'left'
+
+<Tercera>:
+    name:'3'
+    MDTopAppBar:
+        pos_hint: {'center_x': 0.5,'center_y':0.96}
+        elevation: 2
+        title: "Lista de estampillas"
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        specific_text_color: 0, 0, 0, 1
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+    MDLabel:
+        text:'Hola Pantalla 3 y Final'
+        halign: 'center'
+    MDRectangleFlatButton:
+        text: 'Modificar'
+        pos_hint: {'center_x':0.1,'center_y':0.05}
+        on_press:
+            root.manager.current = '2'
+            root.manager.transition.direction = 'right'
