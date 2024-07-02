@@ -6,11 +6,14 @@ from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 from kivy.core.window import Window
 from kivymd.uix.toolbar import MDTopAppBar
-from kivymd.uix.list import MDList, OneLineListItem
+from kivymd.uix.list import MDList, OneLineListItem, ThreeLineListItem, IconRightWidget
 from kivy.uix.screenmanager import ScreenManager,Screen
 from kivy.clock import Clock
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, MetaData, Table, inspect
 import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, Integer, String, Text
 
 server = '34.176.110.254'
 database = 'ESTAMPILLA'
@@ -21,8 +24,17 @@ connection_string = f'mssql+pymssql://{username}:{password}@{server}/{database}'
 
 engine = create_engine(connection_string)
 
+Base = declarative_base()
 
-
+# Define tu modelo SQLAlchemy
+class Estampilla(Base):
+    __tablename__ = 'Estampillas'  # Nombre de tu tabla en la base de datos
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String)
+    año = Column(Integer)
+    país = Column(String)
+    descripción = Column(Text)
+    imagen = Column(String)
 
 
 class Primera(Screen):
@@ -32,21 +44,27 @@ class Segunda(Screen):
     pass
 
 
+
 class Tercera(Screen):
     def on_enter(self):
         self.populate_list()
 
     def populate_list(self):
+        inspector = inspect(engine)
+        columns = inspector.get_columns('estampillas')
+        column_titles = '   |   '.join([col['name'] for col in columns])
+        self.ids.lista.clear_widgets()
+        self.ids.lista.add_widget(OneLineListItem(text=column_titles, bg_color=(0.8, 0.8, 0.8, 1)))  # Color de fondo para diferenciar
+
         query = "SELECT * FROM Estampillas"  # Cambia 'estampillas' por el nombre de tu tabla
         with engine.connect() as connection:
             result = connection.execute(text(query))
-            self.ids.lista.clear_widgets()
-
             for row in result:
-                item_text = ' | '.join([str(value) for value in row])
+                item_text = '   |   '.join([str(value) for value in row])
                 self.ids.lista.add_widget(OneLineListItem(text=item_text))
     
-
+class Cuarta(Screen):
+    pass
 
 class App(MDApp):
     def build(self):
@@ -54,9 +72,39 @@ class App(MDApp):
         sm.add_widget(Primera(name='1'))
         sm.add_widget(Segunda(name='2'))
         sm.add_widget(Tercera(name='3'))
-
+        sm.add_widget(Cuarta(name='4'))
         return Builder.load_file('main.kv')
-       
+    
+    def guardar_datos(self):
+        nombre = self.root.get_screen('1').ids.Nombre.text
+        año = int(self.root.get_screen('1').ids.Año.text)
+        país = self.root.get_screen('1').ids.País.text
+        descripción = self.root.get_screen('1').ids.Descripción.text
+        imagen = self.root.get_screen('1').ids.Imagen_texto.text
+
+        # Crea una instancia del modelo Estampilla
+        nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagen=imagen)
+
+        # Crea una sesión de SQLAlchemy
+        Session = sessionmaker(bind=engine)
+        session = Session()
+
+        try:
+            # Agrega la nueva estampilla a la sesión y confirma los cambios en la base de datos
+            session.add(nueva_estampilla)
+            session.commit()
+            print("Datos guardados correctamente en la base de datos.")
+        except Exception as e:
+            print(f"Error al guardar datos en la base de datos: {str(e)}")
+            session.rollback()
+        finally:
+            session.close()
+
+    def cargar_imagen(self):
+        # Implementa la lógica para cargar la imagen si es necesario
+        pass
+    
+    
     
 
 if __name__ == '__main__':

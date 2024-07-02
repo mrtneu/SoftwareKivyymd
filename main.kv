@@ -2,6 +2,7 @@ ScreenManager:
     Primera:
     Segunda:
     Tercera:
+    Cuarta:
 
 <Primera>:
     name:'1'
@@ -23,7 +24,7 @@ ScreenManager:
             
 
             MDTextField:
-                id: nombre
+                id:Nombre
                 hint_text: "Nombre"
                 text_color: 0, 0, 0, 1
                 line_color_normal: 0.56, 0.79, 0.18, 1
@@ -32,7 +33,7 @@ ScreenManager:
                 text_color_focus: 'black'
 
             MDTextField:
-                id: año
+                id:Año
                 hint_text: "Año"
                 input_filter: 'int'
                 text_color: 0, 0, 0, 1
@@ -42,7 +43,7 @@ ScreenManager:
                 text_color_focus: 'black'
 
             MDTextField:
-                id: pais
+                id:País
                 hint_text: "País"
                 text_color: 0, 0, 0, 1
                 line_color_normal: 0.56, 0.79, 0.18, 1
@@ -51,7 +52,7 @@ ScreenManager:
                 text_color_focus: 'black'
 
             MDTextField:
-                id: description
+                id:Descripción
                 hint_text: "Descripción"
                 multiline: True
                 text_color: 0, 0, 0, 1
@@ -66,7 +67,7 @@ ScreenManager:
                 height: dp(200)
 
                 MDTextField:
-                    id: imagen_texto
+                    id:Imagen_texto
                     hint_text: "Ruta de la Imagen"
                     size_hint_x: 0.7
                     text_color: 0, 0, 0, 1
@@ -87,9 +88,19 @@ ScreenManager:
 
 
             Image:
-                id: imagen
+                id:Imagen
                 size_hint_y: None
                 height: dp(200)
+
+    MDFillRoundFlatIconButton:
+        text:'Guardar'
+        icon:'content-save'
+        icon_color:'black'
+        pos_hint: {'center_x': 0.09,'center_y':0.05}
+        md_bg_color: 0.56, 0.79, 0.18, 1
+        text_color: 'black'
+        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+        on_release: app.guardar_datos()
 
 
     MDFillRoundFlatIconButton:
@@ -108,38 +119,46 @@ ScreenManager:
 
 <Segunda>:
     name:'2'
-    MDTopAppBar:
-        pos_hint: {'center_x': 0.5,'center_y':0.96}
-        elevation: 2
-        title: "Modificar estampilla"
-        md_bg_color: 0.56, 0.79, 0.18, 1
-        specific_text_color: 'black'
-        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
-    MDLabel:
-        text: 'Pantalla 2'
-        halign: 'center'
-    MDFillRoundFlatIconButton:
-        text: 'Añadir'
-        icon: "plus"
-        icon_color: 'black'
-        pos_hint: {'center_x':0.1,'center_y':0.05}
-        on_press:
-            root.manager.current = '1'
-            root.manager.transition.direction = 'right'
-        md_bg_color: 0.56, 0.79, 0.18, 1
-        text_color: 0, 0, 0, 1
-        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
-    MDFillRoundFlatIconButton:
-        text: 'Lista'
-        icon: "list-box-outline"
-        icon_color: 'black'
-        pos_hint: {'center_x': 0.9,'center_y':0.05}
-        on_press:
-            root.manager.current = '3'
-            root.manager.transition.direction = 'left'
-        md_bg_color: 0.56, 0.79, 0.18, 1
-        text_color: 0, 0, 0, 1
-        font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+    MDBoxLayout:
+        orientation:"vertical"
+        md_bg_color: "white"
+        MDTopAppBar:
+            pos_hint: {'center_x': 0.5,'center_y':0.96}
+            elevation: 2
+            title: "Modificar estampilla"
+            md_bg_color: 0.56, 0.79, 0.18, 1
+            specific_text_color: 'black'
+            font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+        MDBoxLayout:
+            padding:30
+            orientation:"vertical"
+
+            MDScrollView:
+                MDList:
+                    id:lista
+        MDFillRoundFlatIconButton:
+            text: 'Añadir'
+            icon: "plus"
+            icon_color: 'black'
+            pos_hint: {'center_x':0.1,'center_y':0.05}
+            on_press:
+                root.manager.current = '1'
+                root.manager.transition.direction = 'right'
+            md_bg_color: 0.56, 0.79, 0.18, 1
+            text_color: 0, 0, 0, 1
+            font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+        MDFillRoundFlatIconButton:
+            text: 'Lista'
+            icon: "list-box-outline"
+            icon_color: 'black'
+            pos_hint: {'center_x': 0.9,'center_y':0.05}
+            on_press:
+                root.manager.current = '3'
+                root.manager.transition.direction = 'left'
+            md_bg_color: 0.56, 0.79, 0.18, 1
+            text_color: 0, 0, 0, 1
+            font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+    
 
 <Tercera>:
     name:'3'
@@ -162,16 +181,42 @@ ScreenManager:
             MDScrollView:
                 MDList:
                     id:lista
+                
                     
             
         MDFillRoundFlatIconButton:
             text: 'Modificar'
             icon: "pencil"
             icon_color: 'black'
-            pos_hint: {'center_x':0.1,'center_y':0.05}
+            pos_hint: {'center_x':0.1,'center_y':0.5}
             on_press:
                 root.manager.current = '2'
                 root.manager.transition.direction = 'right'
             md_bg_color: 0.56, 0.79, 0.18, 1
             text_color: 0, 0, 0, 1
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
+<Cuarta>:
+    name: '4'
+    MDBoxLayout:
+        orientation: 'vertical'
+        padding: 20
+
+        MDTopAppBar:
+            title: "Modificar Estampilla"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.96}
+            elevation: 2
+            md_bg_color: 0.56, 0.79, 0.18, 1
+            specific_text_color: 'black'
+            font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
+        MDTextField:
+            id: data_input
+            hint_text: "Datos de la Estampilla"
+            multiline: True
+
+        MDRaisedButton:
+            text: "Guardar Cambios"
+            pos_hint: {'center_x': 0.5}
+            on_release:
+                app.save_changes()
