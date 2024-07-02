@@ -6,19 +6,17 @@ from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 from kivy.core.window import Window
 from kivymd.uix.toolbar import MDTopAppBar
-from kivymd.uix.list import MDList, OneLineListItem, ThreeLineListItem, IconRightWidget
+from kivymd.uix.list import MDList, OneLineListItem, ThreeLineListItem, IconRightWidget,OneLineAvatarListItem, ImageLeftWidget
 from kivy.uix.screenmanager import ScreenManager,Screen
 from kivy.clock import Clock
 from sqlalchemy import create_engine, text, MetaData, Table, inspect
-import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Text
 from kivy.utils import platform
 from kivy.uix.filechooser import FileChooserIconView
-from kivymd.uix.list import OneLineAvatarListItem, ImageLeftWidget
-import os
-
+import os,shutil
+import sqlalchemy as sa
 
 
 server = '34.176.110.254'
@@ -47,11 +45,15 @@ class Primera(Screen):
     def select_file(self):
         from plyer import filechooser
         filechooser.open_file(on_selection = self.selected)
+
     def selected(self, selection):
         if selection:
-            self.ids.Imagen_texto.text = selection[0]
-            print(selection)
-            self.ids.Imagen.source = selection[0]
+            src = selection[0]
+            dst = "C:/Users/ishie/OneDrive/Documentos/GitHub/SoftwareKivyymd/img"
+            final = shutil.copy2(src,dst)
+            print(final) 
+            self.ids.Imagen_texto.text = final
+            self.ids.Imagen.source = src
 
 
 class Segunda(Screen):
