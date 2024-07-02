@@ -6,33 +6,22 @@ from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 from kivy.core.window import Window
 from kivymd.uix.toolbar import MDTopAppBar
+from kivymd.uix.list import MDList, OneLineListItem
 from kivy.uix.screenmanager import ScreenManager,Screen
+from kivy.clock import Clock
 from sqlalchemy import create_engine, text
+import sqlalchemy as sa
 
-# Configuración de la conexión
 server = '34.176.110.254'
 database = 'ESTAMPILLA'
 username = 'sqlserver'
 password = 'admin'
 
-# Cadena de conexión
 connection_string = f'mssql+pymssql://{username}:{password}@{server}/{database}'
 
-# Crear el motor de SQLAlchemy
 engine = create_engine(connection_string)
 
-try:
-    with engine.connect() as connection:
-        # Ejemplo de consulta
-        query = "SELECT * FROM Estampillas"  # Aquí colocas tu consulta SQL
-        result = connection.execute(text(query))
-        
-        # Procesar los resultados
-        for row in result:
-            print(row)
 
-except Exception as e:
-    print(f"Error al ejecutar la consulta: {str(e)}")
 
 
 
@@ -41,20 +30,34 @@ class Primera(Screen):
 
 class Segunda(Screen):
     pass
-class Tercera(Screen):
-    pass
 
-sm = ScreenManager()
-sm.add_widget(Primera(name='1'))
-sm.add_widget(Segunda(name='2'))
-sm.add_widget(Tercera(name='3'))
+
+class Tercera(Screen):
+    def on_enter(self):
+        self.populate_list()
+
+    def populate_list(self):
+        query = "SELECT * FROM Estampillas"  # Cambia 'estampillas' por el nombre de tu tabla
+        with engine.connect() as connection:
+            result = connection.execute(text(query))
+            self.ids.lista.clear_widgets()
+
+            for row in result:
+                item_text = ' | '.join([str(value) for value in row])
+                self.ids.lista.add_widget(OneLineListItem(text=item_text))
+    
 
 
 class App(MDApp):
     def build(self):
+        sm = ScreenManager()  # Create ScreenManager here
+        sm.add_widget(Primera(name='1'))
+        sm.add_widget(Segunda(name='2'))
+        sm.add_widget(Tercera(name='3'))
 
-        
         return Builder.load_file('main.kv')
+       
+    
 
-
-App().run()
+if __name__ == '__main__':
+    App().run()
