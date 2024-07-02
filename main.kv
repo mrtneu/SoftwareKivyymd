@@ -80,7 +80,7 @@ ScreenManager:
                     font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
                     text: "cargar imagen"
                     size_hint_x: 0.2
-                    on_release: app.cargar_imagen()
+                    on_press: root.select_file()
                     text_color: 0, 0, 0, 1
                     md_bg_color: 0.56, 0.79, 0.18, 1
                     title_color: 0, 0, 0, 1
@@ -89,6 +89,7 @@ ScreenManager:
 
             Image:
                 id:Imagen
+                source: ''
                 size_hint_y: None
                 height: dp(200)
 
@@ -100,7 +101,7 @@ ScreenManager:
         md_bg_color: 0.56, 0.79, 0.18, 1
         text_color: 'black'
         font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
-        on_release: app.guardar_datos()
+        on_press: app.guardar_datos()
 
 
     MDFillRoundFlatIconButton:
@@ -181,6 +182,9 @@ ScreenManager:
             MDScrollView:
                 MDList:
                     id:lista
+<EstampillaListItem>:
+    ImageLeftWidget:
+        source:root.image
                 
                     
             

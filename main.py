@@ -14,6 +14,12 @@ import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Text
+from kivy.utils import platform
+from kivy.uix.filechooser import FileChooserIconView
+from kivymd.uix.list import OneLineAvatarListItem, ImageLeftWidget
+import os
+
+
 
 server = '34.176.110.254'
 database = 'ESTAMPILLA'
@@ -38,7 +44,15 @@ class Estampilla(Base):
 
 
 class Primera(Screen):
-    pass
+    def select_file(self):
+        from plyer import filechooser
+        filechooser.open_file(on_selection = self.selected)
+    def selected(self, selection):
+        if selection:
+            self.ids.Imagen_texto.text = selection[0]
+            print(selection)
+            self.ids.Imagen.source = selection[0]
+
 
 class Segunda(Screen):
     pass
@@ -62,6 +76,7 @@ class Tercera(Screen):
             for row in result:
                 item_text = '   |   '.join([str(value) for value in row])
                 self.ids.lista.add_widget(OneLineListItem(text=item_text))
+    
     
 class Cuarta(Screen):
     pass
@@ -100,9 +115,7 @@ class App(MDApp):
         finally:
             session.close()
 
-    def cargar_imagen(self):
-        # Implementa la lógica para cargar la imagen si es necesario
-        pass
+    
     
     
     
