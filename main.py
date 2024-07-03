@@ -1,7 +1,6 @@
 from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
-from kivymd.app import MDApp
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 from kivy.core.window import Window
@@ -23,6 +22,11 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivy.core.image import Image as CoreImage
 from kivymd.toast import toast
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
+from kivymd.app import MDApp
+from kivy.app import App
+from kivymd.uix.dialog import MDDialog
 import os,shutil
 import sqlalchemy as sa
 import base64
@@ -71,7 +75,52 @@ class Primera(Screen):
 class Segunda(Screen):
     def __init__(self, **kwargs):
         super(Segunda, self).__init__(**kwargs)
-        self.image_bytes = None  # Initialize image bytes
+        self.image_bytes = None
+        self.current_id = None
+
+    def eliminar_estampilla(self):
+        app = MDApp.get_running_app()
+        if self.current_id is None:
+            toast("No hay estampilla seleccionada para eliminar", duration=3)
+            return
+
+        def confirm_delete(instance):
+            dialog.dismiss()
+            try:
+                Session = sessionmaker(bind=engine)
+                session = Session()
+                estampilla = session.query(Estampilla).get(self.current_id)
+                session.delete(estampilla)
+                session.commit()
+                toast("Estampilla eliminada correctamente.", duration=3)
+                self.manager.current = '3'
+            except Exception as e:
+                toast(f"Error al eliminar estampilla: {str(e)}", duration=3)
+                session.rollback()
+            finally:
+                session.close()
+
+        dialog = MDDialog(
+            title="Confirmar eliminación",
+            text="¿Estás seguro de que quieres eliminar esta estampilla?",
+            size_hint=(0.7, 0.2),
+            buttons=[
+                MDFlatButton(
+                    text="CANCELAR",
+                    theme_text_color="Custom",
+                    text_color=app.theme_cls.primary_color,
+                    on_release=lambda x: dialog.dismiss()
+                ),
+                MDFlatButton(
+                    text="ELIMINAR",
+                    theme_text_color="Custom",
+                    text_color=app.theme_cls.primary_color,
+                    on_release=confirm_delete
+                )
+            ]
+        )
+        dialog.open()
+
     def select_image(self):
         from plyer import filechooser
         file_path = filechooser.open_file(title="Seleccione una imagen", filters=[("Image Files", "*.png;*.jpg;*.jpeg")])
@@ -85,13 +134,20 @@ class Segunda(Screen):
         self.ids.año_input.text = str(estampilla.año)
         self.ids.país_input.text = estampilla.país
         self.ids.descripción_input.text = estampilla.descripción
-        self.current_id = estampilla.id  # Store current id for update
-        # Load image from binary
+        self.current_id = estampilla.id
         image_data = BytesIO(estampilla.imagenb)
         pil_image = PILImage.open(image_data)
-        pil_image.save('temp.png')  # Temporarily save the image to load it in Kivy
+        pil_image.save('temp.png')
         self.ids.imagen_input.source = 'temp.png'
-
+    def refresh_data(self):
+        # Reset all the data fields
+        self.ids.nombre_input.text = ''
+        self.ids.año_input.text = ''
+        self.ids.país_input.text = ''
+        self.ids.descripción_input.text = ''
+        self.ids.imagen_input.source = 'default-image.png'  # Reset to a default image if needed
+        self.image_bytes = None
+        self.current_id = None
     def guardar_cambios(self):
         if not (self.ids.nombre_input.text and self.ids.año_input.text and self.ids.país_input.text and self.ids.descripción_input.text and self.image_bytes):
             toast("Todos los campos deben estar llenos", duration=3)
@@ -105,7 +161,7 @@ class Segunda(Screen):
             estampilla.año = int(self.ids.año_input.text)
             estampilla.país = self.ids.país_input.text
             estampilla.descripción = self.ids.descripción_input.text
-            estampilla.imagenb = self.image_bytes  # Update image bytes in database
+            estampilla.imagenb = self.image_bytes
             session.commit()
             toast("Cambios guardados correctamente.", duration=3)
         except Exception as e:
@@ -118,7 +174,12 @@ class Segunda(Screen):
 class Tercera(Screen):
     def on_enter(self):
         self.cargar_datos()
-
+    def on_delete_stamp(self):
+    # Logic to delete a stamp...
+    # Now reset Segunda before navigating back to it
+        segunda_screen = self.manager.get_screen('2')
+        segunda_screen.on_enter()  # Manually call the reset if needed
+        self.manager.current = '2'
     def cargar_datos(self):
         self.ids.estampillas_layout.clear_widgets()  # Clear previous items
         Session = sessionmaker(bind=engine)

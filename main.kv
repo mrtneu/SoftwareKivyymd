@@ -226,6 +226,13 @@ ScreenManager:
                 md_bg_color: 0.56, 0.79, 0.18, 1
                 text_color: 0, 0, 0, 1
                 font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+            MDFillRoundFlatIconButton:
+                text: "Eliminar"
+                icon: "delete"
+                pos_hint: {'center_x': 0.5}
+                on_press: root.eliminar_estampilla()
+                md_bg_color: 1, 0, 0, 1  # Red button for delete
+                text_color: 1, 1, 1, 1
 
 
     
@@ -264,11 +271,14 @@ ScreenManager:
             icon_color: 'black'
             pos_hint: {'center_x': 0.1, 'center_y': 0.05}
             on_press:
+                # Call to refresh data on Segunda screen before switching
+                app.root.get_screen('2').refresh_data()
                 root.manager.current = '2'
                 root.manager.transition.direction = 'right'
             md_bg_color: 0.56, 0.79, 0.18, 1
             text_color: 0, 0, 0, 1
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
 
 <Cuarta>:
     name: '4'
