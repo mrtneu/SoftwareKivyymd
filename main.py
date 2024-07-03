@@ -105,13 +105,15 @@ class Segunda(Screen):
             estampilla.año = int(self.ids.año_input.text)
             estampilla.país = self.ids.país_input.text
             estampilla.descripción = self.ids.descripción_input.text
-        # Handle image update if needed
+            estampilla.imagenb = self.image_bytes  # Update image bytes in database
             session.commit()
             toast("Cambios guardados correctamente.", duration=3)
         except Exception as e:
             toast(f"Error al guardar cambios: {str(e)}", duration=3)
+            session.rollback()
         finally:
             session.close()
+
 
 class Tercera(Screen):
     def on_enter(self):
