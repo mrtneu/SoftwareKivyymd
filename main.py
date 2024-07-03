@@ -96,10 +96,12 @@ class Tercera(Screen):
 
             img = Image(texture=image_texture)
             nombre_label = MDLabel(text=estampilla.nombre, size_hint_y=.2, font_style='H6')
+            año_label = MDLabel(text=str(estampilla.año), size_hint_y=.2, font_size='15dp')
             pais_label = MDLabel(text=estampilla.país, size_hint_y=.2, font_size='15dp')
 
             box.add_widget(img)
             box.add_widget(nombre_label)
+            box.add_widget(año_label)
             box.add_widget(pais_label)
             card.add_widget(box)
             layout.add_widget(card)
