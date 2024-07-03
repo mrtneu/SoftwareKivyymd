@@ -69,6 +69,7 @@ class Primera(Screen):
 
 
 class Segunda(Screen):
+    
     pass
 
 

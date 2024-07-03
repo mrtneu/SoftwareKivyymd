@@ -1,3 +1,4 @@
+#:kivy 2.0
 ScreenManager:
     Primera:
     Segunda:
@@ -21,8 +22,6 @@ ScreenManager:
             height: self.minimum_height
             padding: dp(5)
             spacing: dp(5)
-            
-
             MDTextField:
                 id:Nombre
                 hint_text: "Nombre"
@@ -138,7 +137,7 @@ ScreenManager:
                 MDList:
                     id:lista
         MDFillRoundFlatIconButton:
-            text: 'Añadir'
+            text: 'Dengue'
             icon: "plus"
             icon_color: 'black'
             pos_hint: {'center_x':0.1,'center_y':0.05}
@@ -159,50 +158,63 @@ ScreenManager:
             md_bg_color: 0.56, 0.79, 0.18, 1
             text_color: 0, 0, 0, 1
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
-    
-
 <Tercera>:
 
     name: '3'
 
     MDBoxLayout:
         orientation: "vertical"
-        md_bg_color: "white"
+        md_bg_color: 1, 1, 1, 1  # Blanco en formato RGBA
 
         MDTopAppBar:
             pos_hint: {'center_x': 0.5, 'center_y': 0.96}
-            elevation: 2
-            title: "Lista de estampillas"
-            md_bg_color: 0.56, 0.79, 0.18, 1
-            specific_text_color: 'black'
+            elevation: 10
+            title: "Lista de Estampillas"
+            md_bg_color: 0.56, 0.79, 0.18, 1  # Color verde
+            specific_text_color: 0, 0, 0, 1  # Negro
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
 
         MDBoxLayout:
-            padding: 30
+            padding: 10
             orientation: "vertical"
+
             MDScrollView:
-                id:scroll
-                MDGridLayout:
-                    id:estampillas_layout
+                GridLayout:
                     cols: 2
-                    height:self.minimum_height
-                    size_hint_y: 1
-                     
-                        
-                            
-                
+                    adaptive_height: True
+                    padding: 10
+                    spacing: 10
+
+                    MDCard:
+                        size_hint: (None, None)
+                        size: ("240dp", "180dp")
+                        MDBoxLayout:
+                            orientation: 'vertical'
+                            Image:
+                                source: 'fruit1.jpg'
+                                height: "120dp"
+                            MDLabel:
+                                text: 'Apple'
+                                halign: 'center'
+                                theme_text_color: 'Secondary'
+                            MDLabel:
+                                text: '63.7 MB'
+                                halign: 'center'
+                                theme_text_color: 'Secondary'
+
+                    # Repite el MDCard con ajustes similares para otras imágenes
 
         MDFillRoundFlatIconButton:
             text: 'Modificar'
             icon: "pencil"
-            icon_color: 'black'
-            pos_hint: {'center_x': 0.1, 'center_y': 0.5}
-            on_press:
-                root.manager.current = '2'
-                root.manager.transition.direction = 'right'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}
             md_bg_color: 0.56, 0.79, 0.18, 1
             text_color: 0, 0, 0, 1
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+            on_press:
+                root.manager.current = '2'
+                root.manager.transition.direction = 'right'
+
 
 <Cuarta>:
     name: '4'
