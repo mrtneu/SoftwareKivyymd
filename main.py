@@ -224,6 +224,7 @@ class Cuarta(Screen):
 
 class App(MDApp):
     def build(self):
+        self.title = "Estampillas Sofichi" 
         sm = ScreenManager()  # Create ScreenManager here
         sm.add_widget(Primera(name='1'))
         sm.add_widget(Segunda(name='2'))
