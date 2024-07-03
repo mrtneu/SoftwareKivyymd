@@ -22,6 +22,7 @@ from kivy.uix.image import AsyncImage
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivy.core.image import Image as CoreImage
+from kivymd.toast import toast
 import os,shutil
 import sqlalchemy as sa
 import base64
@@ -121,30 +122,43 @@ class App(MDApp):
         sm.add_widget(Cuarta(name='4'))
         return Builder.load_file('main.kv')
     
+    from kivymd.toast import toast
     def guardar_datos(self):
-        nombre = self.root.get_screen('1').ids.Nombre.text
-        año = int(self.root.get_screen('1').ids.Año.text)
-        país = self.root.get_screen('1').ids.País.text
-        descripción = self.root.get_screen('1').ids.Descripción.text
-        imagen_bytes = self.root.get_screen('1').image_bytes
+        try:
+            nombre = self.root.get_screen('1').ids.Nombre.text.strip()
+            año = self.root.get_screen('1').ids.Año.text.strip()
+            país = self.root.get_screen('1').ids.País.text.strip()
+            descripción = self.root.get_screen('1').ids.Descripción.text.strip()
+            imagen_bytes = self.root.get_screen('1').image_bytes
+
+        # Validar que todos los campos requeridos estén llenos
+            if not (nombre and año and país and descripción and imagen_bytes):
+                toast("Todos los campos deben estar llenos", duration=3)
+                return
+
+        # Convertir el año a entero
+            año = int(año)
 
         # Crea una instancia del modelo Estampilla
-        nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagenb=imagen_bytes)
+            nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagenb=imagen_bytes)
 
         # Crea una sesión de SQLAlchemy
-        Session = sessionmaker(bind=engine)
-        session = Session()
+            Session = sessionmaker(bind=engine)
+            session = Session()
 
-        try:
-            # Agrega la nueva estampilla a la sesión y confirma los cambios en la base de datos
+        # Agrega la nueva estampilla a la sesión y confirma los cambios en la base de datos
             session.add(nueva_estampilla)
             session.commit()
-            print("Datos guardados correctamente en la base de datos.")
+            toast("Datos guardados correctamente en la base de datos.", duration=3)
+        except ValueError as ve:
+            toast(f"Error de validación: {str(ve)}", duration=3)
         except Exception as e:
-            print(f"Error al guardar datos en la base de datos: {str(e)}")
-            session.rollback()
+            toast(f"Error al guardar datos en la base de datos: {str(e)}", duration=3)
+            if 'session' in locals():
+                session.rollback()
         finally:
-            session.close()
+            if 'session' in locals():
+                session.close()
 
     
     
