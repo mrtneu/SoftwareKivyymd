@@ -162,32 +162,34 @@ ScreenManager:
     
 
 <Tercera>:
-    name:'3'
+
+    name: '3'
+
     MDBoxLayout:
         orientation: "vertical"
         md_bg_color: "white"
-    
+
         MDTopAppBar:
-            pos_hint: {'center_x': 0.5,'center_y':0.96}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.96}
             elevation: 2
             title: "Lista de estampillas"
             md_bg_color: 0.56, 0.79, 0.18, 1
             specific_text_color: 'black'
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
-        
+
         MDBoxLayout:
-            padding:30
-            orientation:"vertical"
+            padding: 30
+            orientation: "vertical"
 
             MDScrollView:
                 MDList:
-                    id:lista
-                        
+                    id: lista
+
         MDFillRoundFlatIconButton:
             text: 'Modificar'
             icon: "pencil"
             icon_color: 'black'
-            pos_hint: {'center_x':0.1,'center_y':0.5}
+            pos_hint: {'center_x': 0.1, 'center_y': 0.5}
             on_press:
                 root.manager.current = '2'
                 root.manager.transition.direction = 'right'
