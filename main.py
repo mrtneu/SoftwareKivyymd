@@ -113,15 +113,6 @@ class Segunda(Screen):
         finally:
             session.close()
 
-
-
-
-
-
-
-
-
-
 class Tercera(Screen):
     def on_enter(self):
         self.cargar_datos()
