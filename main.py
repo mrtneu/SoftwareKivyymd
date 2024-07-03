@@ -17,11 +17,15 @@ from kivy.utils import platform
 from kivy.uix.filechooser import FileChooserIconView
 from io import BytesIO
 from PIL import Image as PILImage 
+from kivymd.uix.card import MDCard
 from kivy.uix.image import AsyncImage
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
 from kivy.core.image import Image as CoreImage
 import os,shutil
 import sqlalchemy as sa
 import base64
+
 
 server = '34.176.110.254'
 database = 'ESTAMPILLA'
@@ -70,54 +74,37 @@ class Segunda(Screen):
 
 class Tercera(Screen):
     def on_enter(self):
-        self.populate_list()
+        self.cargar_datos()
 
-    def populate_list(self):
-        inspector = inspect(engine)
-        columns = inspector.get_columns('Estampillas')
-        column_names = [col['name'] for col in columns]
+    def cargar_datos(self):
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        estampillas = session.query(Estampilla).all()
+        layout = self.ids.estampillas_layout
 
-        query = "SELECT * FROM Estampillas"
-        with engine.connect() as connection:
-            result = connection.execute(text(query))
+        for estampilla in estampillas:
+            # Decodifica la imagen binaria
+            image_data = BytesIO(estampilla.imagenb)
+            pil_image = PILImage.open(image_data)
+            buffer = BytesIO()
+            pil_image.save(buffer, format='PNG')
+            buffer.seek(0)
+            image_texture = CoreImage(buffer, ext='png').texture
 
-            for row in result:
-                item_widget = OneLineAvatarListItem()
+            card = MDCard(size_hint=(.5, .3))
+            box = MDBoxLayout(orientation='vertical', padding='5dp')
 
-                item_text = ''
-                for idx, col_name in enumerate(column_names):
-                    if col_name != 'ImagenB':
-                        if idx > 0:
-                            item_text += ' | '
-                        item_text += str(row[idx])
+            img = Image(texture=image_texture)
+            nombre_label = MDLabel(text=estampilla.nombre, size_hint_y=.2, font_style='H6')
+            pais_label = MDLabel(text=estampilla.país, size_hint_y=.2, font_size='15dp')
 
-                item_widget.text = item_text
+            box.add_widget(img)
+            box.add_widget(nombre_label)
+            box.add_widget(pais_label)
+            card.add_widget(box)
+            layout.add_widget(card)
 
-                # Mostrar la imagen si hay datos de imagen binaria
-                imagen_index = column_names.index('ImagenB')
-                if row[imagen_index]:
-                    # Convertir los bytes de la imagen a una imagen que Pillow pueda manejar
-                    imagen_bytes = row[imagen_index]
-                    image_pil = PILImage.open(BytesIO(imagen_bytes))
-                    
-                    # Redimensionar la imagen para generar una miniatura
-                    thumbnail_size = (100, 100)  # Tamaño de la miniatura deseado
-                    image_pil.thumbnail(thumbnail_size)
-
-                    # Convertir la imagen de Pillow a un formato que Kivy pueda usar
-                    buffer = BytesIO()
-                    image_pil.save(buffer, format='png')
-                    buffer.seek(0)
-
-                    # Crear un widget de imagen y establecer la miniatura desde el buffer
-                    image_texture = CoreImage(buffer, ext='png').texture
-                    image_widget = AsyncImage(texture=image_texture)
-
-                    # Agregar la imagen al ítem de la lista
-                    item_widget.add_widget(image_widget)
-
-                # Agregar el widget a la lista
-                self.ids.lista.add_widget(item_widget)
+        session.close()
     
     
 class Cuarta(Screen):
