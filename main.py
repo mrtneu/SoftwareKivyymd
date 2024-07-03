@@ -39,9 +39,9 @@ engine = create_engine(connection_string)
 
 Base = declarative_base()
 
-# Define tu modelo SQLAlchemy
+
 class Estampilla(Base):
-    __tablename__ = 'Estampillas'  # Nombre de tu tabla en la base de datos
+    __tablename__ = 'Estampillas'  
     id = Column(Integer, primary_key=True)
     nombre = Column(String)
     año = Column(Integer)
@@ -84,7 +84,7 @@ class Tercera(Screen):
         layout = self.ids.estampillas_layout
 
         for estampilla in estampillas:
-            # Decodifica la imagen binaria
+        
             image_data = BytesIO(estampilla.imagenb)
             pil_image = PILImage.open(image_data)
             buffer = BytesIO()
@@ -115,7 +115,7 @@ class Cuarta(Screen):
 
 class App(MDApp):
     def build(self):
-        sm = ScreenManager()  # Create ScreenManager here
+        sm = ScreenManager() 
         sm.add_widget(Primera(name='1'))
         sm.add_widget(Segunda(name='2'))
         sm.add_widget(Tercera(name='3'))
@@ -130,23 +130,15 @@ class App(MDApp):
             país = self.root.get_screen('1').ids.País.text.strip()
             descripción = self.root.get_screen('1').ids.Descripción.text.strip()
             imagen_bytes = self.root.get_screen('1').image_bytes
-
-        # Validar que todos los campos requeridos estén llenos
             if not (nombre and año and país and descripción and imagen_bytes):
                 toast("Todos los campos deben estar llenos", duration=3)
                 return
-
-        # Convertir el año a entero
-            año = int(año)
-
-        # Crea una instancia del modelo Estampilla
-            nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagenb=imagen_bytes)
-
-        # Crea una sesión de SQLAlchemy
+            año = int(año)     
+            nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagenb=imagen_bytes)    
             Session = sessionmaker(bind=engine)
             session = Session()
 
-        # Agrega la nueva estampilla a la sesión y confirma los cambios en la base de datos
+        
             session.add(nueva_estampilla)
             session.commit()
             toast("Datos guardados correctamente en la base de datos.", duration=3)
