@@ -12,12 +12,12 @@ from kivy.clock import Clock
 from sqlalchemy import create_engine, text, MetaData, Table, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, LargeBinary
 from kivy.utils import platform
 from kivy.uix.filechooser import FileChooserIconView
 import os,shutil
 import sqlalchemy as sa
-
+import base64
 
 server = '34.176.110.254'
 database = 'ESTAMPILLA'
@@ -38,7 +38,7 @@ class Estampilla(Base):
     año = Column(Integer)
     país = Column(String)
     descripción = Column(Text)
-    imagen = Column(String)
+    imagenb = Column(LargeBinary)
 
 
 class Primera(Screen):
@@ -49,10 +49,13 @@ class Primera(Screen):
     def selected(self, selection):
         if selection:
             src = selection[0]
-            dst = "C:/Users/ishie/OneDrive/Documentos/GitHub/SoftwareKivyymd/img"
-            final = shutil.copy2(src,dst)
-            print(final) 
-            self.ids.Imagen_texto.text = final
+            with open(src, 'rb') as f:
+                image_bytes = f.read()
+            
+            image_base64 = base64.b64encode(image_bytes).decode('utf-8')            
+            self.ids.Imagen_texto.text = image_base64
+            self.image_bytes = image_bytes
+
             self.ids.Imagen.source = src
 
 
@@ -97,10 +100,10 @@ class App(MDApp):
         año = int(self.root.get_screen('1').ids.Año.text)
         país = self.root.get_screen('1').ids.País.text
         descripción = self.root.get_screen('1').ids.Descripción.text
-        imagen = self.root.get_screen('1').ids.Imagen_texto.text
+        imagen_bytes = self.root.get_screen('1').image_bytes
 
         # Crea una instancia del modelo Estampilla
-        nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagen=imagen)
+        nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagenb=imagen_bytes)
 
         # Crea una sesión de SQLAlchemy
         Session = sessionmaker(bind=engine)
