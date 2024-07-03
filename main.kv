@@ -119,52 +119,118 @@ ScreenManager:
 
 
 <Segunda>:
-    name:'2'
+    name: '2'
     MDBoxLayout:
-        orientation:"vertical"
+        orientation: "vertical"
         md_bg_color: "white"
         MDTopAppBar:
-            pos_hint: {'center_x': 0.5,'center_y':0.96}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.96}
             elevation: 2
-            title: "Modificar estampilla"
+            title: "Modificar Estampilla"
             md_bg_color: 0.56, 0.79, 0.18, 1
             specific_text_color: 'black'
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
-        MDBoxLayout:
-            padding:30
-            orientation:"vertical"
 
-            MDScrollView:
-                MDList:
-                    id:lista
-        MDFillRoundFlatIconButton:
-            text: 'Añadir'
-            icon: "plus"
-            icon_color: 'black'
-            pos_hint: {'center_x':0.1,'center_y':0.05}
-            on_press:
-                root.manager.current = '1'
-                root.manager.transition.direction = 'right'
-            md_bg_color: 0.56, 0.79, 0.18, 1
-            text_color: 0, 0, 0, 1
-            font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
-        MDFillRoundFlatIconButton:
-            text: 'Lista'
-            icon: "list-box-outline"
-            icon_color: 'black'
-            pos_hint: {'center_x': 0.9,'center_y':0.05}
-            on_press:
-                root.manager.current = '3'
-                root.manager.transition.direction = 'left'
-            md_bg_color: 0.56, 0.79, 0.18, 1
-            text_color: 0, 0, 0, 1
-            font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+        MDScrollView:
+            MDList:
+                MDTextField:
+                    id: nombre_input
+                    hint_text: "Nombre"
+                    helper_text: "Ingrese el nombre de la estampilla"
+                    helper_text_mode: "on_focus"
+                    icon_right: "account"
+                    icon_right_color: app.theme_cls.primary_color
+
+                MDTextField:
+                    id: año_input
+                    hint_text: "Año"
+                    helper_text: "Ingrese el año de la estampilla"
+                    helper_text_mode: "on_focus"
+                    icon_right: "calendar"
+                    icon_right_color: app.theme_cls.primary_color
+
+                MDTextField:
+                    id: país_input
+                    hint_text: "País"
+                    helper_text: "Ingrese el país de la estampilla"
+                    helper_text_mode: "on_focus"
+                    icon_right: "earth"
+                    icon_right_color: app.theme_cls.primary_color
+
+                MDTextField:
+                    id: descripción_input
+                    hint_text: "Descripción"
+                    helper_text: "Ingrese una descripción de la estampilla"
+                    helper_text_mode: "on_focus"
+                    icon_right: "text-box"
+                    icon_right_color: app.theme_cls.primary_color
+
+                Image:
+                    id: imagen_input
+                    source: ''
+                    size_hint_y: None
+                    height: dp(200)
+
+                MDFillRoundFlatIconButton:
+                    text: "Cambiar Imagen"
+                    icon: "image-edit"
+                    pos_hint: {'center_x': 0.5}
+                    on_press: root.select_image()
+                    md_bg_color: 0.56, 0.79, 0.18, 1
+                    text_color: 0, 0, 0, 1
+                    font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(60)
+            spacing: dp(10)
+            MDFillRoundFlatIconButton:
+                text: 'Añadir'
+                icon: "plus"
+                icon_color: 'black'
+                pos_hint: {'center_x': 0.1}
+                on_press:
+                    root.manager.current = '1'
+                    root.manager.transition.direction = 'right'
+                md_bg_color: 0.56, 0.79, 0.18, 1
+                text_color: 0, 0, 0, 1
+                font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
+            MDFillRoundFlatIconButton:
+                text: 'Lista'
+                icon: "list-box-outline"
+                icon_color: 'black'
+                pos_hint: {'center_x': 0.9}
+                on_press:
+                    root.manager.current = '3'
+                    root.manager.transition.direction = 'left'
+                md_bg_color: 0.56, 0.79, 0.18, 1
+                text_color: 0, 0, 0, 1
+                font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
+            MDFillRoundFlatIconButton:
+                text: "Guardar Cambios"
+                icon: "content-save"
+                pos_hint: {'center_x': 0.5}
+                on_press: root.guardar_cambios()
+                md_bg_color: 0.56, 0.79, 0.18, 1
+                text_color: 0, 0, 0, 1
+                font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
+            MDFillRoundFlatIconButton:
+                text: "Cancelar"
+                icon: "cancel"
+                pos_hint: {'center_x': 0.5}
+                on_press: root.manager.current = '3'  # Going back to the list view
+                md_bg_color: 0.56, 0.79, 0.18, 1
+                text_color: 0, 0, 0, 1
+                font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
+
+
     
 
 <Tercera>:
-
     name: '3'
-
     MDBoxLayout:
         orientation: "vertical"
         md_bg_color: "white"
@@ -178,25 +244,24 @@ ScreenManager:
             font_name: 'assets/fuentes/ArchivoNarrow-Regular.ttf'
 
         MDBoxLayout:
-            padding: 30
+            padding: [30, 10]
             orientation: "vertical"
+
             MDScrollView:
-                id:scroll
                 MDGridLayout:
-                    id:estampillas_layout
+                    id: estampillas_layout
                     cols: 2
-                    height:self.minimum_height
-                    size_hint_y: 1
-                     
-                        
-                            
-                
+                    adaptive_height: True
+                    size_hint_y: None
+                    spacing: dp(10)
+                    padding: dp(10)
+                    row_default_height: '120dp'  # Adjust this value to fit your content appropriately
 
         MDFillRoundFlatIconButton:
             text: 'Modificar'
             icon: "pencil"
             icon_color: 'black'
-            pos_hint: {'center_x': 0.1, 'center_y': 0.5}
+            pos_hint: {'center_x': 0.1, 'center_y': 0.05}
             on_press:
                 root.manager.current = '2'
                 root.manager.transition.direction = 'right'

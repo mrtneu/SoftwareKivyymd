@@ -69,7 +69,51 @@ class Primera(Screen):
 
 
 class Segunda(Screen):
-    pass
+    def __init__(self, **kwargs):
+        super(Segunda, self).__init__(**kwargs)
+        self.image_bytes = None  # Initialize image bytes
+    def select_image(self):
+        from plyer import filechooser
+        file_path = filechooser.open_file(title="Seleccione una imagen", filters=[("Image Files", "*.png;*.jpg;*.jpeg")])
+        if file_path:
+            self.ids.imagen_input.source = file_path[0]
+            with open(file_path[0], 'rb') as img_file:
+                self.image_bytes = img_file.read()
+
+    def load_estampilla(self, estampilla):
+        self.ids.nombre_input.text = estampilla.nombre
+        self.ids.año_input.text = str(estampilla.año)
+        self.ids.país_input.text = estampilla.país
+        self.ids.descripción_input.text = estampilla.descripción
+        self.current_id = estampilla.id  # Store current id for update
+        # Load image from binary
+        image_data = BytesIO(estampilla.imagenb)
+        pil_image = PILImage.open(image_data)
+        pil_image.save('temp.png')  # Temporarily save the image to load it in Kivy
+        self.ids.imagen_input.source = 'temp.png'
+
+    def guardar_cambios(self):
+        if not (self.ids.nombre_input.text and self.ids.año_input.text and self.ids.país_input.text and self.ids.descripción_input.text and self.image_bytes):
+            toast("Todos los campos deben estar llenos", duration=3)
+            return
+
+        try:
+            Session = sessionmaker(bind=engine)
+            session = Session()
+            estampilla = session.query(Estampilla).get(self.current_id)
+            estampilla.nombre = self.ids.nombre_input.text
+            estampilla.año = int(self.ids.año_input.text)
+            estampilla.país = self.ids.país_input.text
+            estampilla.descripción = self.ids.descripción_input.text
+        # Handle image update if needed
+            session.commit()
+            toast("Cambios guardados correctamente.", duration=3)
+        except Exception as e:
+            toast(f"Error al guardar cambios: {str(e)}", duration=3)
+        finally:
+            session.close()
+
+
 
 
 
@@ -83,13 +127,12 @@ class Tercera(Screen):
         self.cargar_datos()
 
     def cargar_datos(self):
+        self.ids.estampillas_layout.clear_widgets()  # Clear previous items
         Session = sessionmaker(bind=engine)
         session = Session()
         estampillas = session.query(Estampilla).all()
-        layout = self.ids.estampillas_layout
 
         for estampilla in estampillas:
-            # Decodifica la imagen binaria
             image_data = BytesIO(estampilla.imagenb)
             pil_image = PILImage.open(image_data)
             buffer = BytesIO()
@@ -97,9 +140,10 @@ class Tercera(Screen):
             buffer.seek(0)
             image_texture = CoreImage(buffer, ext='png').texture
 
-            card = MDCard(size_hint=(.5, .3), spacing=10)  # Espacio entre elementos en el card
-            box = MDBoxLayout(orientation='vertical', padding='10dp', spacing=10)  # Aumenta el padding y spacing
+            card = MDCard(size_hint=(.5, .3), spacing=10)
+            card.bind(on_release=lambda widget, est=estampilla: self.select_estampilla(est))
 
+            box = MDBoxLayout(orientation='vertical', padding='10dp', spacing=10)
             img = Image(texture=image_texture)
             nombre_label = MDLabel(text=estampilla.nombre, size_hint_y=.2, font_style='H6')
             año_label = MDLabel(text=str(estampilla.año), size_hint_y=.2, font_size='15dp')
@@ -110,9 +154,15 @@ class Tercera(Screen):
             box.add_widget(año_label)
             box.add_widget(pais_label)
             card.add_widget(box)
-            layout.add_widget(card)
+            self.ids.estampillas_layout.add_widget(card)
 
         session.close()
+
+    def select_estampilla(self, estampilla):
+        app = MDApp.get_running_app()
+        app.root.get_screen('2').load_estampilla(estampilla)
+        self.manager.current = '2'
+
 
     
 class Cuarta(Screen):
