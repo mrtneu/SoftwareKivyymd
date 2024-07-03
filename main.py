@@ -73,6 +73,11 @@ class Segunda(Screen):
 
 
 
+
+
+
+
+
 class Tercera(Screen):
     def on_enter(self):
         self.cargar_datos()
@@ -92,8 +97,8 @@ class Tercera(Screen):
             buffer.seek(0)
             image_texture = CoreImage(buffer, ext='png').texture
 
-            card = MDCard(size_hint=(.5, .3))
-            box = MDBoxLayout(orientation='vertical', padding='5dp')
+            card = MDCard(size_hint=(.5, .3), spacing=10)  # Espacio entre elementos en el card
+            box = MDBoxLayout(orientation='vertical', padding='10dp', spacing=10)  # Aumenta el padding y spacing
 
             img = Image(texture=image_texture)
             nombre_label = MDLabel(text=estampilla.nombre, size_hint_y=.2, font_style='H6')
@@ -108,7 +113,7 @@ class Tercera(Screen):
             layout.add_widget(card)
 
         session.close()
-    
+
     
 class Cuarta(Screen):
     pass
@@ -130,15 +135,25 @@ class App(MDApp):
             país = self.root.get_screen('1').ids.País.text.strip()
             descripción = self.root.get_screen('1').ids.Descripción.text.strip()
             imagen_bytes = self.root.get_screen('1').image_bytes
+
+
+        # Validar que todos los campos requeridos estén llenos
             if not (nombre and año and país and descripción and imagen_bytes):
                 toast("Todos los campos deben estar llenos", duration=3)
                 return
-            año = int(año)     
-            nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagenb=imagen_bytes)    
+
+        # Convertir el año a entero
+            año = int(año)
+
+        # Crea una instancia del modelo Estampilla
+            nueva_estampilla = Estampilla(nombre=nombre, año=año, país=país, descripción=descripción, imagenb=imagen_bytes)
+
+        # Crea una sesión de SQLAlchemy
             Session = sessionmaker(bind=engine)
             session = Session()
 
-        
+        # Agrega la nueva estampilla a la sesión y confirma los cambios en la base de datos
+
             session.add(nueva_estampilla)
             session.commit()
             toast("Datos guardados correctamente en la base de datos.", duration=3)
@@ -151,11 +166,6 @@ class App(MDApp):
         finally:
             if 'session' in locals():
                 session.close()
-
-    
-    
-    
-    
 
 if __name__ == '__main__':
     App().run()
